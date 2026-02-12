@@ -1,15 +1,19 @@
+from django.conf import settings
 from django.db import models
 from django.utils import timezone
+from datetime import date
 
 class Partner(models.Model):
+    user = models.OneToOneField(settings.AUTH_USER_MODEL, on_delete=models.SET_NULL, null=True, blank=True, related_name='partner_profile')
     TYPE_CHOICES = (
-        ('Pengumpul', 'Pengumpul'),
-        ('Pengolah', 'Pengolah'),
+        ('Individu', 'Individu'),
+        ('UMKM', 'UMKM'),
+        ('Organisasi', 'Organisasi'),
     )
     STATUS_CHOICES = (
         ('Aktif', 'Aktif'),
         ('Pending', 'Pending'),
-        ('Nonaktif', 'Nonaktif'),
+        ('Ditolak', 'Ditolak'),
     )
 
     name = models.CharField(max_length=255)
@@ -21,7 +25,7 @@ class Partner(models.Model):
     address = models.TextField(blank=True, null=True)
     contact_person = models.CharField(max_length=255, blank=True, null=True)
     description = models.TextField(blank=True, null=True)
-    join_date = models.DateField(default=timezone.now)
+    join_date = models.DateField(default=date.today)
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
 
