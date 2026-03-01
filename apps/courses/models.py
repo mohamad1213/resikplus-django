@@ -1,5 +1,6 @@
 from django.db import models
 from django.utils import timezone
+from django.conf import settings
 
 class Course(models.Model):
     LEVEL_CHOICES = (
@@ -73,11 +74,18 @@ class Lesson(models.Model):
         return f"{self.module.title} - {self.title}"
 
 class CourseRegistration(models.Model):
+    STATUS_CHOICES = (
+        ('process', 'Process'),
+        ('berhasil', 'Berhasil'),
+    )
     course = models.ForeignKey(Course, on_delete=models.CASCADE, related_name='registrations')
+    user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.SET_NULL, null=True, blank=True, related_name='course_registrations')
     full_name = models.CharField(max_length=255)
     email = models.EmailField()
     phone = models.CharField(max_length=50)
     notes = models.TextField(blank=True, null=True)
+    status = models.CharField(max_length=20, choices=STATUS_CHOICES, default='process')
+    generated_password = models.CharField(max_length=50, blank=True, null=True)
     created_at = models.DateTimeField(auto_now_add=True)
     
     def __str__(self):
